@@ -28,7 +28,6 @@ class InstagramPublish extends Controller
     private function set_redirect_uri()
     {
         $this->redirect_uri = URL::to('/', [], true).'/instagram/publish/oauth_redirect';
-        dd($this->redirect_uri);
     }
 
     public function check_user()
