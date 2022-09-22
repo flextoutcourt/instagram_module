@@ -26,3 +26,7 @@
 
 ### 4. Lancer le serveur
 ### 5. Rendez-vous sur {ROOT_PATH}/instagram/publish/login et le tour est joué
+
+## 999. Bientôt : 
+    - Une interface pour choisir ses photos à publier, le texte
+    - Une interface pour publier des Story / Réels
