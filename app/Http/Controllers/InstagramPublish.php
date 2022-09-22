@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -10,17 +11,23 @@ use Illuminate\Support\Facades\URL;
 class InstagramPublish extends Controller
 {
 
-    private $baseUrlFB = 'https://facebook.com/v15.0';
-    private $baseUrlGraph = 'https://graph.facebook.com/v15.0';
+    private string $baseUrlFB = 'https://facebook.com/v15.0';
+    private string $baseUrlGraph = 'https://graph.facebook.com/v15.0';
 
     private string $redirect_uri;
-    private string $app_id = "767919941130776";
-    private string $app_secret = "f97402b4f6cec894eb37fa40ad31e017";
-    private $scopes = 'instagram_basic,instagram_content_publish,pages_read_engagements,pages_show_list,public_profile';
+    private string $app_id = '';
+    private string $app_secret = '';
+    private string $scopes = 'instagram_basic,instagram_content_publish,pages_read_engagements,pages_show_list,public_profile';
+
+    private string $code = '';
+    private string $user_token;
+
+    private string $instagram_business_account;
+    private string $instagram_container_id;
 
     private function set_redirect_uri()
     {
-        $this->redirect_uri = URL::to('/') . '/instagram/publish/oauth_redirect';
+        $this->redirect_uri = 'https://quentinleclerc.fr/instagram/publish/oauth_redirect';
     }
 
     public function check_user()
@@ -31,7 +38,8 @@ class InstagramPublish extends Controller
 
     private function log_user(): void
     {
-        $url = "{$this->baseUrlFB}/dialog/oauth?client_id={$this->app_id}&redirect_uri={$this->redirect_uri}&scopes={$this->scopes}";
+        $app_id = env('INSTAGRAM_APP_ID');
+        $url = "{$this->baseUrlFB}/dialog/oauth?client_id={$app_id}&redirect_uri={$this->redirect_uri}&scopes={$this->scopes}";
         redirect()->away($url)->send();
     }
 
@@ -44,7 +52,6 @@ class InstagramPublish extends Controller
 
     private function get_page_id()
     {
-        dd('test');
         $request = $this->curl_request($this->baseUrlGraph . '/me/accounts', 'GET', [
             'access_token' => $this->user_token
         ]);
@@ -68,7 +75,7 @@ class InstagramPublish extends Controller
     {
         $request = $this->curl_request($this->baseUrlGraph.'/'.$this->instagram_business_account.'/media', 'POST', [
             'image_url' => 'https://picsum.photos/1920/1080',
-            'caption' => 'Test de fonctionnalité',
+            'caption' => "Test d'implémentation Instagram",
             'access_token' => $this->user_token,
         ]);
         $r = json_decode($request);
@@ -84,14 +91,13 @@ class InstagramPublish extends Controller
         ]);
         $r = json_decode($request);
         dd($r);
-        die;
     }
 
     public function oauth_redirect(Request $request)
     {
         $this->set_redirect_uri();
         if ($request->has('code')) {
-            $code = $request->get('code');
+            $this->code = $request->get('code');
             $this->get_access_token();
         }
     }
@@ -99,10 +105,10 @@ class InstagramPublish extends Controller
     private function get_access_token()
     {
         $request = $this->curl_request($this->baseUrlGraph . '/oauth/access_token', 'POST', [
-            'client_id' => $this->client_id,
-            'client_secret' => $this->app_secret,
+            'client_id' => env('INSTAGRAM_APP_ID'),
+            'client_secret' => env('INSTAGRAM_APP_SECRET'),
             'redirect_uri' => $this->redirect_uri,
-            'code' => $code,
+            'code' => $this->code,
         ]);
         $r = json_decode($request);
         $this->store_token($r->access_token);
@@ -126,8 +132,13 @@ class InstagramPublish extends Controller
         $response = curl_exec($ch);
         $r = json_decode($response);
         if (isset($r->error)) {
-            dd($r->error->getMessage());
+            dd($r->error);
         }
         return $response;
+    }
+
+    public function index()
+    {
+        return view('post.post');
     }
 }

@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/instagram/publish/login', [\App\Http\Controllers\InstagramPublish::class, 'check_user']);
 
-Route::get('/instagram/publish/oauth_redirect', [\App\Http\Controllers\InstagramPublish::class, 'oauth_redirect']);
+
+Route::get('/instagram/publish', [\App\Http\Controllers\InstagramPublish::class, 'index'])->name('index');
+Route::get('/instagram/publish/login', [\App\Http\Controllers\InstagramPublish::class, 'check_user'])->name('post');
+Route::get('/instagram/publish/oauth_redirect', [\App\Http\Controllers\InstagramPublish::class, 'oauth_redirect'])->name('oauth_redirect');
