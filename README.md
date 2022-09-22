@@ -25,3 +25,4 @@
 - INSTAGRAM_APP_SECRET = votre secret d'application sur [developers.facebook.com](developers.facebook.com)
 
 ### 4. Lancer le serveur
+### 5. Rendez-vous sur {ROOT_PATH}/instagram/publish/login et le tour est joué
