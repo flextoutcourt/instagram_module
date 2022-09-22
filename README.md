@@ -1,4 +1,4 @@
-#Installation
+# Installation
 
 
 ### 1. Créer une application Facebook comportant :
@@ -14,14 +14,14 @@
 
 - Une page Instagram business liée a la page Facebook Business (https://www.facebook.com/business/instagram/create)
 
-###2. Les commandes pour lancer le projet
+### 2. Les commandes pour lancer le projet
 - `composer i`
 - `php artisan key:generate`
 - `sudo chmod -R 777 ./`
 
-###3. Remplir le fichier .env
+### 3. Remplir le fichier .env
 
 - INSTAGRAM_APP_ID = votre identifiant d'application sur [developers.facebook.com](developers.facebook.com)
 - INSTAGRAM_APP_SECRET = votre secret d'application sur [developers.facebook.com](developers.facebook.com)
 
-###4. Lancer le serveur
+### 4. Lancer le serveur
