@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
+use Symfony\Component\HttpFoundation\File\File;
 
 class InstagramController extends Controller
 {
@@ -37,10 +39,31 @@ class InstagramController extends Controller
     {
         $urls = [];
         foreach($files as $key => $file){
-            $file->storeAs('public', $file->getClientOriginalName());
+            if ($file->getClientOriginalExtension() === 'mp4'){
+                // store video
+                $file->storeAs('videos', $file->getClientOriginalName(), ['disk' => 'public']);
+            }else{
+                $file->storeAs('images', $file->getClientOriginalName(), ['disk' => 'public']);
+            }
             $urls[] = URL::to('/') . '/storage/' . $file->getClientOriginalName();
         }
         return $urls;
+    }
+
+    public function store(PostRequest $request)
+    {
+        if(count($request->file('medias')) > 1) {
+            $carousel = new InstagramCarouselController;
+            $carousel->store($request);
+        }
+
+        if($request->file('medias')[0]->getClientOriginalExtension() === 'mp4') {
+            $reels = new InstagramReelController;
+            $reels->store($request);
+        }
+
+        $post = new InstagramPublishController;
+        $post->store($request);
     }
 
     protected function set_redirect_uri()

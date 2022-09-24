@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/instagram/publish/post', [\App\Http\Controllers\InstagramPublishController::class, 'index'])->name('instagram.publish.post.get');
-Route::post('/instagram/publish/post', [\App\Http\Controllers\InstagramPublishController::class, 'store'])->name('instagram.publish.post.post');
+Route::post('/instagram/publish/post', [\App\Http\Controllers\InstagramController::class, 'store'])->name('instagram.publish.post.post');
 
 Route::get('/instagram/publish/carousel', [\App\Http\Controllers\InstagramCarouselController::class, 'index'])->name('instagram.publish.carousel.get');
 Route::post('/instagram/publish/carousel', [\App\Http\Controllers\InstagramCarouselController::class, 'store'])->name('instagram.publish.carousel.post');

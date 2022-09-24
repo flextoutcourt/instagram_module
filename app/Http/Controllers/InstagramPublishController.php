@@ -13,11 +13,6 @@ class InstagramPublishController extends InstagramController
 
     public function store(PostRequest $request)
     {
-//        dd($request->file('medias'));
-        if(count($request->file('medias')) > 1) {
-            $carousel = new InstagramCarouselController;
-            $carousel->store($request);
-        }
         $this->set_redirect_uri();
         $this->log_user('post', $request);
     }
