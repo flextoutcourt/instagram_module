@@ -19,7 +19,7 @@ class InstagramPublish extends InstagramController
 
     protected function create_container($params)
     {
-        $request = $this->curl_request($this->baseUrlGraph.'/'.$params['instagram_business_account'].'/media', 'POST', [
+        $request = $this->curl_request($this->baseUrlGraph . '/' . $params['instagram_business_account'] . '/media', 'POST', [
             "image_url" => "https://picsum.photos/1920/1080",
             'caption' => 'Test intégration instagram from API',
             'access_token' => $params['user_token'],

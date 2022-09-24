@@ -1,9 +1,9 @@
 # Installation
 
-
 ### 1. Créer une application Facebook comportant :
+
     - Le module facebook login (https://developers.facebook.com/docs/facebook-login) 
-    
+
 ######1.1. Pour configurer le module facebook login, il faut ajouter les informations suivantes :
 
     - L'url de redirect {ROOT_PATH}/instagram/publish/oauth_redirect (HTTPS obligatoire)
@@ -13,6 +13,7 @@
     - Une page Instagram business liée a la page Facebook Business (https://www.facebook.com/business/instagram/create)
 
 ### 2. Les commandes pour lancer le projet :
+
     - `composer i`
     - `php artisan key:generate`
     - `sudo chmod -R 777 ./`
@@ -30,6 +31,7 @@
     - {ROOT_PATH}/instagram/publish/carousel    (Permet de publier un carousel sur instagram)
     - {ROOT_PATH}/instagram/publish/reels       (Permet de publier une reels sur instagram)
 
-## 999. Bientôt : 
+## 999. Bientôt :
+
     - Une interface pour choisir ses photos à publier, le texte
     - Une interface pour publier des Réels

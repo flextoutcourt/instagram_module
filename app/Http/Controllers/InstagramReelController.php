@@ -15,7 +15,7 @@ class InstagramReelController extends InstagramController
 
     protected function create_container($params)
     {
-        $request = $this->curl_request($this->baseUrlGraph.'/'.$params['instagram_business_account'].'/media', 'POST', [
+        $request = $this->curl_request($this->baseUrlGraph . '/' . $params['instagram_business_account'] . '/media', 'POST', [
             "video_url" => "https://quentinleclerc.fr/video.mp4",
             'caption' => 'Test intégration instagram from API',
             'access_token' => $params['user_token'],

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use http\Url;
 use Illuminate\Http\Request;
 
 class InstagramController extends Controller
@@ -23,7 +24,7 @@ class InstagramController extends Controller
 
     protected function set_redirect_uri()
     {
-        $this->redirect_uri = 'https://quentinleclerc.fr/instagram/publish/oauth_redirect';
+        $this->redirect_uri = Url::to('/',[], true) . '/instagram/publish/oauth_redirect';
     }
 
     protected function log_user(string $from): void
