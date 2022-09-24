@@ -3,4 +3,4 @@
     <div class="container">
         {{ $r }}
     </div>
-@endsection('content')
+@endsection
