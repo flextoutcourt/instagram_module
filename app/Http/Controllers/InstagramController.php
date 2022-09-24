@@ -22,6 +22,11 @@ class InstagramController extends Controller
     protected string $instagram_container_id;
     protected string $from;
 
+    public function success()
+    {
+        return view('instagram.publish.success');
+    }
+
     protected function set_redirect_uri()
     {
         $this->redirect_uri = Url::to('/',[], true) . '/instagram/publish/oauth_redirect';
@@ -137,5 +142,6 @@ class InstagramController extends Controller
             'access_token' => $params['user_token'],
         ]);
         $r = json_decode($request);
+        return view('instagram.publish.success', ['r' => $r, 'flash' => ['type' => 'success', 'message' => 'Successfully published to Instagram']]);
     }
 }

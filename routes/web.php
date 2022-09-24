@@ -21,5 +21,7 @@ Route::get('/instagram/publish/post', [\App\Http\Controllers\InstagramPublish::c
 Route::get('/instagram/publish/carousel', [\App\Http\Controllers\InstagramCarouselController::class, 'index'])->name('instagram.publish.carousel');
 Route::get('/instagram/publish/reels', [\App\Http\Controllers\InstagramReelController::class, 'index'])->name('instagram.publish.reels');
 
+Route::get('/instagram/publish/success', [\App\Http\Controllers\InstagramController::class, 'success'])->name('instagram.publish.success');
+
 Route::get('/instagram/publish/oauth_redirect', [\App\Http\Controllers\InstagramPublish::class, 'oauth_redirect'])->name('oauth_redirect');
 
