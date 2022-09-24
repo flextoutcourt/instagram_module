@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ReelsRequest;
+use App\Http\Requests\PostRequest;
 
 class InstagramReelController extends InstagramController
 {
@@ -12,17 +12,17 @@ class InstagramReelController extends InstagramController
         return view('instagram.publish.reels');
     }
 
-    public function store(ReelsRequest $request)
+    public function store(PostRequest $request)
     {
         $this->set_redirect_uri();
-        $this->log_user('reel');
+        $this->log_user('reel', $request);
     }
 
     protected function create_container($params)
     {
         $request = $this->curl_request($this->baseUrlGraph . '/' . $params['instagram_business_account'] . '/media', 'POST', [
-            "video_url" => "https://quentinleclerc.fr/video.mp4",
-            'caption' => 'Test intégration instagram from API',
+            "video_url" => $params['request']['medias'],
+            'caption' => $params['request']['request']->caption,
             'access_token' => $params['user_token'],
             'media_type' => 'REELS'
         ]);
