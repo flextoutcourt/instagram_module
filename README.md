@@ -23,8 +23,13 @@
     - INSTAGRAM_APP_SECRET = votre secret d'application sur [developers.facebook.com](developers.facebook.com)
 
 ### 4. Lancer le serveur
-### 5. Rendez-vous sur {ROOT_PATH}/instagram/publish/login et le tour est joué
+
+### 5. Url de l'application
+
+    - {ROOT_PATH}/instagram/publish/post        (Permet de publier une photo sur instagram)
+    - {ROOT_PATH}/instagram/publish/carousel    (Permet de publier un carousel sur instagram)
+    - {ROOT_PATH}/instagram/publish/reels       (Permet de publier une reels sur instagram)
 
 ## 999. Bientôt : 
     - Une interface pour choisir ses photos à publier, le texte
-    - Une interface pour publier des Story / Réels
+    - Une interface pour publier des Réels
