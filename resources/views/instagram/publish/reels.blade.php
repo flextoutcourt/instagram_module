@@ -1,4 +1,4 @@
-@yield('layouts.base')
+@extends('layouts.base')
 @section('content')
     <form action="">
         @csrf
