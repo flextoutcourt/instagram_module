@@ -40,12 +40,12 @@ class InstagramController extends Controller
         $urls = [];
         foreach($files as $key => $file){
             if ($file->getClientOriginalExtension() === 'mp4'){
-                // store video
                 $file->storeAs('videos', $file->getClientOriginalName(), ['disk' => 'public']);
+                $urls = URL::to('/') . '/storage/videos/' . $file->getClientOriginalName();
             }else{
                 $file->storeAs('images', $file->getClientOriginalName(), ['disk' => 'public']);
+                $urls[] = URL::to('/') . '/storage/images/' . $file->getClientOriginalName();
             }
-            $urls[] = URL::to('/') . '/storage/' . $file->getClientOriginalName();
         }
         return $urls;
     }
