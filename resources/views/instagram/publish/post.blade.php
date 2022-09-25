@@ -3,16 +3,19 @@
     <form action="{{ route('instagram.publish.post.post') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="container">
-            <h1 class="h1">Publier une ou plusieurs images sur Instagram</h1>
-            <div class="form-group">
-                <label for="caption">Description</label>
-                <input type="form-control" name="caption">
+            <div class="card__custom">
+                <div class="card__custom-header">
+                    <h1 class="display-4">Publier sur Instagram</h1>
+                </div>
+                <div class="card__custom-body">
+                    <div class="card__custom-label__container">
+                        <label for="medias" class="card__custom-label" id="medias_label" />
+                        <input type="file" class="form-control-file d-none" name="medias[]" id="medias" multiple>
+                    </div>
+                    <input type="text" placeholder="Entrez votre description" class="card__custom-input" name="caption">
+                    <input type="submit" class="card__custom-submit" id="input_submit" disabled>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="media">Images</label>
-                <input type="file" class="form-control-file" name="medias[]" multiple>
-            </div>
-            <input type="submit" class="btn btn--primary">
         </div>
     </form>
 @endsection
