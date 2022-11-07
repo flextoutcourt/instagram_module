@@ -2,26 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CarouselRequest;
+use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 
-class InstagramCarouselController extends InstagramPublish
+class InstagramCarouselController extends InstagramPublishController
 {
 
     protected array $params = [];
 
-    public function index()
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
-        $this->set_redirect_uri();
-        $this->log_user('carousel');
+        return view('instagram.publish.carousel');
     }
 
-    protected function create_container($params, $items = ['1', '2', '3', '4'])
+    /**
+     * @param \App\Http\Requests\PostRequest $request
+     * @return void
+     */
+    public function store(PostRequest $request): void
     {
+        $this->set_redirect_uri();
+        $this->log_user('carousel', $request);
+    }
+
+    protected function create_container($params)
+    {
+        $items = explode(',', $params['request']['medias']);
         $this->params = $params;
         $ids = [];
         foreach ($items as $i => $item) {
             $request = $this->curl_request($this->baseUrlGraph . '/' . $params['instagram_business_account'] . '/media', 'POST', [
-                "image_url" => "https://picsum.photos/id/{$item}/1920/1080",
+                "image_url" => $item,
                 'is_carousel_item' => true,
                 'access_token' => $params['user_token'],
             ]);
@@ -41,7 +56,7 @@ class InstagramCarouselController extends InstagramPublish
             'access_token' => $this->params['user_token'],
             'children' => implode(',', $ids),
             'media_type' => 'CAROUSEL',
-            'caption' => 'Test intégration instagram Carousel from API'
+            'caption' => $this->params['request']['request']->caption,
         ]);
         $r = json_decode($request);
         $this->instagram_container_id = $r->id;

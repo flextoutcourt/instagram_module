@@ -3,25 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\URL;
 
-class InstagramPublish extends InstagramController
+class InstagramPublishController extends InstagramController
 {
+    public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+    {
+        return view('instagram.publish.post');
+    }
 
-    public function index()
+    public function store(PostRequest $request)
     {
         $this->set_redirect_uri();
-        $this->log_user('post');
+        $this->log_user('post', $request);
     }
 
     protected function create_container($params)
     {
         $request = $this->curl_request($this->baseUrlGraph . '/' . $params['instagram_business_account'] . '/media', 'POST', [
-            "image_url" => "https://picsum.photos/1920/1080",
-            'caption' => 'Test intégration instagram from API',
+            "image_url" => $params['request']['medias'],
+            'caption' => $params['request']['request']->caption,
             'access_token' => $params['user_token'],
         ]);
         $r = json_decode($request);

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use http\Url;
+use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use Symfony\Component\HttpFoundation\File\File;
 
 class InstagramController extends Controller
 {
@@ -20,11 +22,48 @@ class InstagramController extends Controller
 
     protected string $instagram_business_account;
     protected string $instagram_container_id;
-    protected string $from;
+    protected array $state;
 
-    public function success()
+    public function success(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
         return view('instagram.publish.success');
+    }
+
+    /**
+     * Store files to storage
+     *
+     * @param $files
+     * @return array
+     */
+    protected function store_files($files): array
+    {
+        $urls = [];
+        foreach($files as $key => $file){
+            if ($file->getClientOriginalExtension() === 'mp4'){
+                $file->storeAs('videos', $file->getClientOriginalName(), ['disk' => 'public']);
+                $urls = URL::to('/') . '/storage/videos/' . $file->getClientOriginalName();
+            }else{
+                $file->storeAs('images', $file->getClientOriginalName(), ['disk' => 'public']);
+                $urls[] = URL::to('/') . '/storage/images/' . $file->getClientOriginalName();
+            }
+        }
+        return $urls;
+    }
+
+    public function store(PostRequest $request)
+    {
+        if(count($request->file('medias')) > 1) {
+            $carousel = new InstagramCarouselController;
+            $carousel->store($request);
+        }
+
+        if($request->file('medias')[0]->getClientOriginalExtension() === 'mp4') {
+            $reels = new InstagramReelController;
+            $reels->store($request);
+        }
+
+        $post = new InstagramPublishController;
+        $post->store($request);
     }
 
     protected function set_redirect_uri()
@@ -32,10 +71,12 @@ class InstagramController extends Controller
         $this->redirect_uri = Url::to('/',[], true) . '/instagram/publish/oauth_redirect';
     }
 
-    protected function log_user(string $from): void
+    protected function log_user(string $from, $request): void
     {
+        $urls = implode(',', $this->store_files($request->file('medias')));
+        $state = $from.'|'.json_encode($request->all()).'|'.$urls;
         $app_id = env('INSTAGRAM_APP_ID');
-        $url = "{$this->baseUrlFB}/dialog/oauth?client_id={$app_id}&redirect_uri={$this->redirect_uri}&scopes={$this->scopes}&state={$from}";
+        $url = "{$this->baseUrlFB}/dialog/oauth?client_id={$app_id}&redirect_uri={$this->redirect_uri}&scopes={$this->scopes}&state={$state}";
         redirect()->away($url)->send();
     }
 
@@ -70,9 +111,9 @@ class InstagramController extends Controller
     protected function redirect_to_controller()
     {
         $controller = '';
-        switch($this->from){
+        switch($this->state['from']){
             case 'post':
-                $controller = new InstagramPublish();
+                $controller = new InstagramPublishController();
                 break;
             case 'carousel':
                 $controller = new InstagramCarouselController();
@@ -83,15 +124,19 @@ class InstagramController extends Controller
             default:
                 break;
         }
-        $controller->create_container(['instagram_business_account' => $this->instagram_business_account, 'user_token' => $this->user_token]);
+        $controller->create_container(['instagram_business_account' => $this->instagram_business_account, 'user_token' => $this->user_token, 'request' => $this->state]);
     }
 
     public function oauth_redirect(Request $request)
     {
         $this->set_redirect_uri();
-        if ($request->has('code')) {
+        if ($request->has('code') && $request->has('state')) {
             $this->code = $request->get('code');
-            $this->from = $request->get('state');
+            $this->state = [
+                'from' => explode('|', $request->get('state'))[0],
+                'request' => json_decode(explode('|', $request->get('state'))[1]),
+                'medias' => explode('|', $request->get('state'))[2],
+            ];
             $this->get_access_token();
         }
     }
@@ -113,7 +158,7 @@ class InstagramController extends Controller
      * @param string $method
      * @param array $params params to be passed into request
      */
-    protected function curl_request(string $endpoint, string $method = 'POST', array $params = [])
+    protected function curl_request(string $endpoint, string $method = 'POST', array $params = []): bool|string
     {
         $url = $method === 'GET' ? $endpoint . '?' . http_build_query($params) : $endpoint;
         $ch = curl_init();
@@ -133,9 +178,9 @@ class InstagramController extends Controller
 
     /**
      * @param array $params
-     * @return void
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
      */
-    protected function publish_to_insta(array $params = [])
+    protected function publish_to_insta(array $params = []): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
         $request = $this->curl_request($this->baseUrlGraph . '/' . $params['instagram_business_account'] . '/media_publish', 'POST', [
             'creation_id' => $params['instagram_container_id'],
